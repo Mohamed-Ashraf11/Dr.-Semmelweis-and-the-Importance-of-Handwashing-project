@@ -1,10 +1,5 @@
 # Dr.-Semmelweis-and-the-Importance-of-Handwashing-project
----
-title: 'Project: Dr. Semmelweis and the Importance of Handwashing'
-author: "Mohamed Ashraf"
-date: "2024-01-31"
-output: html_document
----
+
 
 ```{r setup, include=FALSE}
 library(dplyr)
