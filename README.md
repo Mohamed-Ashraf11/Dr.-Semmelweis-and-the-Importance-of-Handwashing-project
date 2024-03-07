@@ -1,6 +1,6 @@
 # Dr.-Semmelweis-and-the-Importance-of-Handwashing-project
 
-
+## Loading Packages
 ```{r setup, include=FALSE}
 library(dplyr)
 library(ggplot2)
