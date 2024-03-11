@@ -1,0 +1,88 @@
+---
+title: 'Project: Dr. Semmelweis and the Importance of Handwashing'
+author: "Mohamed Ashraf"
+date: "2024-01-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+
+```
+Hungarian physician **Dr. Ignaz Semmelweis** worked at the Vienna General Hospital with childbed fever patients. Childbed fever is a deadly disease affecting women who have just given birth, and in the early 1840s, as many as 10% of the women giving birth died from it at the Vienna General Hospital. 
+
+Dr.Semmelweis discovered that it was the contaminated hands of the doctors delivering the babies, and on June 1st, 1847, he decreed that everyone should wash their hands, an unorthodox and controversial request; nobody in Vienna knew about bacteria.
+
+in this Markdown we will reanalyze the data that made Semmelweis discover the importance of handwashing and its impact on the hospital.
+
+
+# Datasets
+
+### Inspecting Yearly Dataset
+Yearly dataset contains the number of women giving birth at the two clinics at the Vienna General Hospital between the years 1841 and 1846.
+```{r Data}
+yearly = read.csv("yearly_deaths_by_clinic.csv", sep = ",", header =  TRUE)
+head(yearly)
+```
+### Inspecting Monthly Dataset
+Monthly dataset contains data from 'Clinic 1' of the hospital where most deaths occurred.
+``` {r} 
+monthly = read.csv("monthly_deaths.csv", sep = ",", header = TRUE)
+head(monthly)
+```
+## Calculating Proportion Deaths
+### Yearly Proportion Deaths
+``` {r}
+yearly  = yearly %>%
+  mutate(proportion_deaths = deaths/births)
+head(yearly)
+```
+### Monthly Proportion Deaths
+```{r}
+monthly = monthly %>%
+  mutate(proportion_deaths = deaths / births)
+head(monthly)
+
+```
+## Visualizing Yearly proportion deaths
+``` {r}
+ggplot(yearly, aes(x= year , y= proportion_deaths, color = clinic )) + geom_line() + 
+  labs(x= "Year", y= "Proportion Deaths")
+```
+
+
+
+## Visualiing Monthly proportion deaths
+
+``` {r}
+ggplot(monthly, aes(x= as.Date(date) , y= proportion_deaths, group = 1)) + geom_line() + 
+  labs( x= "Date", y = "Proportion Deaths") + 
+  scale_x_date(date_labels = "%Y-%m", date_breaks = "12 month")
+```
+
+## when the handwashing has started
+
+```{r}
+handwashing_start = as.Date("1847-06-01")
+monthly = monthly %>%
+  mutate(handwashing_started = date >= handwashing_start)
+head(monthly)
+
+ggplot(monthly, aes(x= as.Date(date) , y= proportion_deaths, group = 1, color = handwashing_started)) + geom_line() + 
+  labs( x= "Date", y = "Proportion Deaths") + 
+  scale_x_date(date_labels = "%Y-%m", date_breaks = "12 month")
+```
+
+## Calculating the mean proportion of deaths before and after handwashing
+
+```{r}
+monthly_summary = monthly %>%
+  group_by(handwashing_started) %>%
+  summarise(mean_proportion_deaths = mean(proportion_deaths))
+monthly_summary  
+
+```
+  
+
+
